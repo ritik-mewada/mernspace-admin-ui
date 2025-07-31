@@ -9,6 +9,7 @@ import {
     Layout,
     Menu,
     Space,
+    Tag,
     theme,
 } from "antd";
 import { useState } from "react";
@@ -112,7 +113,22 @@ const Dashboard = () => {
                             >
                                 Bandra, Mumbai
                             </Tag> */}
-                            <Badge text="Global" status="success" />
+                            {/* <Badge
+                                text={
+                                    user.role === "admin"
+                                        ? "You are an admin"
+                                        : user.tenant?.name
+                                }
+                                status="success"
+                            /> */}
+                            <Tag
+                                color="volcano"
+                                style={{ borderRadius: "50px" }}
+                            >
+                                {user.role === "admin"
+                                    ? "You are an admin"
+                                    : user.tenant?.name}
+                            </Tag>
                             <Space size={16}>
                                 <Badge dot>
                                     <BellFilled />
@@ -141,7 +157,7 @@ const Dashboard = () => {
                             </Space>
                         </Flex>
                     </Header>
-                    <Content style={{ margin: "0 16px" }}>
+                    <Content style={{ margin: "24px" }}>
                         <Outlet />
                     </Content>
                     <Footer style={{ textAlign: "center" }}>
