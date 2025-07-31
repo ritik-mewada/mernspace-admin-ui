@@ -70,8 +70,16 @@ const UserPage = () => {
                 />
                 {isLoading && <p>Loading users...</p>}
                 {isError && <p>Error loading users: {error.message}</p>}
-                <UsersFilter />
-                <Table columns={columns} dataSource={users?.data} />
+
+                <UsersFilter
+                    onFilterChange={(filterName, filterValue) => {
+                        console.log(
+                            `Filter changed: ${filterName} = ${filterValue}`
+                        );
+                    }}
+                />
+
+                <Table columns={columns} dataSource={users?.data} rowKey="id" />
             </Space>
         </>
     );
