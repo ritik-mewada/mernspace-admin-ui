@@ -20,7 +20,7 @@ const UserForm = () => {
                             <Col span={12}>
                                 <Form.Item
                                     label="First name"
-                                    name="firtName"
+                                    name="firstName"
                                     rules={[
                                         {
                                             required: true,
@@ -133,7 +133,7 @@ const UserForm = () => {
                                     >
                                         {tenants?.data.map((tenant: Tenant) => (
                                             <Select.Option
-                                                value="admin"
+                                                value={tenant.id}
                                                 key={tenant.id}
                                             >
                                                 {tenant.name}
