@@ -50,14 +50,22 @@ const columns = [
     },
   },
   {
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
+  },
+  {
     title: "Role",
     dataIndex: "role",
     key: "role",
   },
   {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
+    title: "Restaurant",
+    dataIndex: "tenant",
+    key: "tenant",
+    render: (_text: string, record: User) => {
+      return <div>{record.tenant?.name}</div>;
+    },
   },
 ];
 
