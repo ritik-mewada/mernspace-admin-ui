@@ -23,12 +23,13 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { createUser, getUsers } from "../../http/api";
-import { CreateUserData, User } from "../../types";
+import { CreateUserData, FieldData, User } from "../../types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import UserForm from "./forms/UserForm";
 import { PER_PAGE } from "../../constants";
+import { debounce } from "lodash";
 
 const columns = [
   {
@@ -62,6 +63,7 @@ const columns = [
 
 const UserPage = () => {
   const [form] = Form.useForm();
+  const [filterForm] = Form.useForm();
   const queryClient = useQueryClient();
   const {
     token: { colorBgLayout },
@@ -79,8 +81,12 @@ const UserPage = () => {
   } = useQuery({
     queryKey: ["users", queryParams],
     queryFn: () => {
+      const filteredParams = Object.fromEntries(
+        Object.entries(queryParams).filter((item) => !!item[1])
+      );
+
       const queryString = new URLSearchParams(
-        queryParams as unknown as Record<string, string>
+        filteredParams as unknown as Record<string, string>
       ).toString();
       return getUsers(queryString).then((response) => response.data);
     },
@@ -98,9 +104,11 @@ const UserPage = () => {
     },
   });
 
-  if (user?.role !== "admin") {
-    return <Navigate to="/" replace={true} />;
-  }
+  const debouncedQUpdate = useMemo(() => {
+    return debounce((value: string | undefined) => {
+      setQueryParams((prev) => ({ ...prev, q: value }));
+    }, 1000);
+  }, []);
 
   const onHandleSubmit = async () => {
     await form.validateFields();
@@ -108,6 +116,27 @@ const UserPage = () => {
     form.resetFields();
     setDrawerOpen(false);
   };
+
+  const onFilterChange = (changedFields: FieldData[]) => {
+    const changedFilterFields = changedFields
+      .map((item) => {
+        return {
+          [item.name[0]]: item.value,
+        };
+      })
+      .reduce((acc, item) => ({ ...acc, ...item }), {});
+
+    if ("q" in changedFilterFields) {
+      debouncedQUpdate(changedFilterFields.q);
+    } else {
+      setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
+    }
+  };
+
+  if (user?.role !== "admin") {
+    return <Navigate to="/" replace={true} />;
+  }
+
   return (
     <>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
@@ -131,20 +160,17 @@ const UserPage = () => {
           )}
         </Flex>
 
-        <UsersFilter
-          onFilterChange={(filterName, filterValue) => {
-            console.log(`Filter changed: ${filterName} = ${filterValue}`);
-          }}
-        >
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setDrawerOpen(true)}
-          >
-            Create User
-          </Button>
-        </UsersFilter>
-
+        <Form form={filterForm} onFieldsChange={onFilterChange}>
+          <UsersFilter>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setDrawerOpen(true)}
+            >
+              Create User
+            </Button>
+          </UsersFilter>
+        </Form>
         <Table
           columns={columns}
           dataSource={users?.data}
