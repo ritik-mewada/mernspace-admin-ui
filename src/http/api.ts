@@ -19,3 +19,6 @@ export const createUser = async (user: CreateUserData) =>
 
 export const createTenant = (tenant: CreateTenantData) =>
   api.post("/tenants", tenant);
+
+export const updateUser = (user: CreateUserData, id: string) =>
+  api.patch(`/users/ ${id}`, user);
