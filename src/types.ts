@@ -22,7 +22,7 @@ export type CreateUserData = {
 };
 
 export type Tenant = {
-  id: number;
+  id: string;
   address: string;
   name: string;
 };
