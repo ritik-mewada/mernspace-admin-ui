@@ -6,7 +6,7 @@ type UsersFilterProps = {
 const UsersFilter = ({ children }: UsersFilterProps) => {
   return (
     <Card>
-      <Row justify={"space-between"} align="middle">
+      <Row justify="space-between">
         <Col span={16}>
           <Row gutter={20}>
             <Col span={8}>
