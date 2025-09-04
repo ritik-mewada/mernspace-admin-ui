@@ -32,3 +32,5 @@ export const updateTenant = async (tenant: CreateTenantData, id: string) =>
 
 // catelog service
 export const getCategories = () => api.get(`${CATALOG_SERVICE}/categories`);
+export const getProducts = (queryParam: string) =>
+  api.get(`${CATALOG_SERVICE}/products?${queryParam}`);
