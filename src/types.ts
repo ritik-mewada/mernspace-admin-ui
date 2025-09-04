@@ -36,3 +36,8 @@ export type CreateTenantData = {
   name: string;
   address: string;
 };
+
+export type Category = {
+  name: string;
+  _id: string;
+};

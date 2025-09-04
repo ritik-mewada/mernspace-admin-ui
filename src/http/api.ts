@@ -4,6 +4,7 @@ import { api } from "./client";
 export const AUTH_SERVICE = "/api/auth";
 const CATALOG_SERVICE = "/api/catalog";
 
+// auth services
 export const login = async (credentials: Credentials) =>
   api.post(`${AUTH_SERVICE}/auth/login`, credentials);
 
@@ -28,3 +29,6 @@ export const updateUser = async (user: CreateUserData, id: string) =>
 
 export const updateTenant = async (tenant: CreateTenantData, id: string) =>
   api.patch(`${AUTH_SERVICE}/tenants/${id}`, tenant);
+
+// catelog service
+export const getCategories = () => api.get(`${CATALOG_SERVICE}/categories`);
