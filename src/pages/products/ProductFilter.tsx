@@ -52,7 +52,7 @@ const ProductsFilter = ({ children }: ProductsFilterProps) => {
                 >
                   {categories?.data.map((category: Category) => {
                     return (
-                      <Select.Option value={category._id}>
+                      <Select.Option key={category._id} value={category._id}>
                         {category.name}
                       </Select.Option>
                     );
@@ -71,7 +71,10 @@ const ProductsFilter = ({ children }: ProductsFilterProps) => {
                   >
                     {restaurants?.data.data.map((restaurant: Tenant) => {
                       return (
-                        <Select.Option value={restaurant.id}>
+                        <Select.Option
+                          key={restaurant.id}
+                          value={restaurant.id}
+                        >
                           {restaurant.name}
                         </Select.Option>
                       );
