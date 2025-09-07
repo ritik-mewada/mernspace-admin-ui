@@ -16,8 +16,10 @@ import { useQuery } from "@tanstack/react-query";
 import Pricing from "./Pricing";
 import Attributes from "./Attributes";
 import ProductImage from "./ProductImage";
+import { useAuthStore } from "../../../store";
 
 const ProductForm = () => {
+  const { user } = useAuthStore();
   const selectedCategory = Form.useWatch("categoryId");
 
   const { data: categories } = useQuery({
@@ -110,35 +112,38 @@ const ProductForm = () => {
               </Col>
             </Row>
           </Card>
-          <Card title="Product image">
-            <Row gutter={24}>
-              <Col span={24}>
-                <Form.Item
-                  label="Restaurant"
-                  name="tenantId"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Restaurant is required",
-                    },
-                  ]}
-                >
-                  <Select
-                    style={{ width: "100%" }}
-                    allowClear
-                    placeholder="Select restaurant"
-                    size="large"
+
+          {user?.role !== "manager" && (
+            <Card title="Tenant info" bordered={false}>
+              <Row gutter={24}>
+                <Col span={24}>
+                  <Form.Item
+                    label="Restaurant"
+                    name="tenantId"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Restaurant is required",
+                      },
+                    ]}
                   >
-                    {restaurants?.data.data.map((tenant: Tenant) => (
-                      <Select.Option value={tenant.id} key={tenant.id}>
-                        {tenant.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Card>
+                    <Select
+                      style={{ width: "100%" }}
+                      allowClear
+                      placeholder="Select restaurant"
+                      size="large"
+                    >
+                      {restaurants?.data.data.map((tenant: Tenant) => (
+                        <Select.Option value={tenant.id} key={tenant.id}>
+                          {tenant.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+          )}
 
           {selectedCategory && <Pricing selectedCategory={selectedCategory} />}
           {selectedCategory && (
