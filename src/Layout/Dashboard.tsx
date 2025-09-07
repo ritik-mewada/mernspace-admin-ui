@@ -110,9 +110,10 @@ const Dashboard = () => {
         <Layout>
           <Header
             style={{
-              paddingLeft: "16px",
+              paddingLeft: collapsed ? "88px" : "16px",
               paddingRight: "16px",
               background: colorBgContainer,
+              transition: "padding-left 0.2s",
             }}
           >
             <Flex gap="middle" align="center" justify="space-between">

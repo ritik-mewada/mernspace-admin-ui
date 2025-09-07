@@ -2,6 +2,7 @@ import {
   Card,
   Col,
   Form,
+  FormInstance,
   Input,
   Row,
   Select,
@@ -11,14 +12,14 @@ import {
 } from "antd";
 
 import { Category, Tenant } from "../../../types";
-import { getCategories, getTenants } from "../../../http/api";
 import { useQuery } from "@tanstack/react-query";
+import { getCategories, getTenants } from "../../../http/api";
 import Pricing from "./Pricing";
 import Attributes from "./Attributes";
 import ProductImage from "./ProductImage";
 import { useAuthStore } from "../../../store";
 
-const ProductForm = () => {
+const ProductForm = ({ form }: { form: FormInstance }) => {
   const { user } = useAuthStore();
   const selectedCategory = Form.useWatch("categoryId");
 
@@ -28,6 +29,7 @@ const ProductForm = () => {
       return getCategories();
     },
   });
+
   const { data: restaurants } = useQuery({
     queryKey: ["restaurants"],
     queryFn: () => {
@@ -39,11 +41,11 @@ const ProductForm = () => {
     <Row>
       <Col span={24}>
         <Space direction="vertical" size="large">
-          <Card title="Product info">
+          <Card title="Product info" bordered={false}>
             <Row gutter={20}>
               <Col span={12}>
                 <Form.Item
-                  label="Product Name"
+                  label="Product name"
                   name="name"
                   rules={[
                     {
@@ -74,10 +76,7 @@ const ProductForm = () => {
                     placeholder="Select category"
                   >
                     {categories?.data.map((category: Category) => (
-                      <Select.Option
-                        value={JSON.stringify(category)}
-                        key={category._id}
-                      >
+                      <Select.Option value={category._id} key={category._id}>
                         {category.name}
                       </Select.Option>
                     ))}
@@ -105,14 +104,13 @@ const ProductForm = () => {
               </Col>
             </Row>
           </Card>
-          <Card title="Product image">
+          <Card title="Product image" bordered={false}>
             <Row gutter={20}>
               <Col span={12}>
-                <ProductImage />
+                <ProductImage initialImage={form.getFieldValue("image")} />
               </Col>
             </Row>
           </Card>
-
           {user?.role !== "manager" && (
             <Card title="Tenant info" bordered={false}>
               <Row gutter={24}>
@@ -128,13 +126,17 @@ const ProductForm = () => {
                     ]}
                   >
                     <Select
-                      style={{ width: "100%" }}
-                      allowClear
-                      placeholder="Select restaurant"
                       size="large"
+                      style={{ width: "100%" }}
+                      allowClear={true}
+                      onChange={() => {}}
+                      placeholder="Select restaurant"
                     >
                       {restaurants?.data.data.map((tenant: Tenant) => (
-                        <Select.Option value={tenant.id} key={tenant.id}>
+                        <Select.Option
+                          value={String(tenant.id)}
+                          key={tenant.id}
+                        >
                           {tenant.name}
                         </Select.Option>
                       ))}
@@ -154,7 +156,7 @@ const ProductForm = () => {
             <Row gutter={24}>
               <Col span={24}>
                 <Space>
-                  <Form.Item>
+                  <Form.Item name="isPublish">
                     <Switch
                       defaultChecked={false}
                       onChange={() => {}}
